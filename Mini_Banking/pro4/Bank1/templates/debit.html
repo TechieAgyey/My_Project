@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Withdraw - Secure Banking</title>
+</head>
+<body style="margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; min-height: 100vh;">
+
+    <header style="background-color: #ffffff; padding: 15px 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-size: 22px; font-weight: 800; color: #1a365d; letter-spacing: -0.5px;">SECURE BANKING</div>
+        <a href="{% url 'dashboard' %}" style="text-decoration: none; color: #2b6cb0; font-weight: 600; font-size: 14px;">← Back to Dashboard</a>
+    </header>
+
+    <main style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px;">
+        <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; border-top: 4px solid #e53e3e;">
+            <h2 style="color: #2d3748; margin-top: 0; text-align: center;">Withdraw Funds</h2>
+            <p style="text-align: center; color: #718096; margin-bottom: 30px;">Available Balance: <strong>Rs.{{ user.balance|floatformat:2 }}</strong></p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <p style="color: #e53e3e; font-size: 14px; text-align: center; font-weight: 600;">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <label style="display: block; color: #4a5568; font-size: 14px; font-weight: 600; margin-bottom: 8px;">Amount to Debit (Rs.)</label>
+                <input type="number" name="amount" step="0.01" min="1" required 
+                       style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px; box-sizing: border-box; font-size: 16px; margin-bottom: 20px;">
+                
+                <button type="submit" style="width: 100%; background-color: #e53e3e; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s;">
+                    Confirm Withdrawal
+                </button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

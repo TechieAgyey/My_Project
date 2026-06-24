@@ -1,0 +1,41 @@
+{% extends "dashboard.html" %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+    <div style="width: 100%; max-width: 500px; background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-top: 5px solid #3182ce; text-align: center;">
+        
+        <!-- Success Icon -->
+        <div style="background-color: #c6f6d5; color: #2f855a; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px;">
+            ✓
+        </div>
+
+        <h2 style="color: #2d3748; margin-bottom: 10px; font-size: 24px; font-weight: 700;">Registration Successful!</h2>
+        <p style="color: #718096; margin-bottom: 30px; font-size: 15px;">Welcome, <strong>{{ user.first_name }}</strong>. Your digital account is ready.</p>
+
+        <!-- Account Number Display -->
+        <div style="background-color: #f8fafc; border: 2px dashed #e2e8f0; padding: 25px; border-radius: 10px; margin-bottom: 30px;">
+            <p style="margin: 0; color: #a0aec0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;">Generated Account Number</p>
+            <h3 style="margin: 12px 0 0; color: #2c5282; font-size: 38px; font-weight: 800; letter-spacing: 6px;">
+                {{ user.account_no }}
+            </h3>
+        </div>
+
+        <!-- Details Grid -->
+        <div style="display: flex; justify-content: space-between; text-align: left; margin-bottom: 35px; padding: 0 10px; border-bottom: 1px solid #f1f5f9; pb-20px;">
+            <div>
+                <p style="margin: 0; color: #a0aec0; font-size: 11px; font-weight: 700; text-transform: uppercase;">A/C Holder</p>
+                <p style="margin: 4px 0 15px; color: #4a5568; font-weight: 600;">{{ user.get_full_name|default:user.username }}</p>
+            </div>
+            <div style="text-align: right;">
+                <p style="margin: 0; color: #a0aec0; font-size: 11px; font-weight: 700; text-transform: uppercase;">Initial Balance</p>
+                <p style="margin: 4px 0 15px; color: #38a169; font-weight: 600;">Rs.{{ user.balance|floatformat:2 }}</p>
+            </div>
+        </div>
+
+        <!-- Action Button -->
+        <a href="{% url 'dashboard' %}" style="display: block; text-decoration: none; background-color: #3182ce; color: white; padding: 16px; border-radius: 8px; font-weight: bold; font-size: 16px; transition: background 0.3s; box-shadow: 0 4px 6px rgba(49, 130, 206, 0.2);">
+            Go to My Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

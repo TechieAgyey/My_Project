@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Split Bill - Secure Banking</title>
+    <style>
+        /* Custom Scrollbar for better visibility */
+        #userList::-webkit-scrollbar { width: 6px; }
+        #userList::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        #userList::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 10px; }
+        #userList::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
+    </style>
+</head>
+<body style="margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; min-height: 100vh;">
+
+    <!-- Header -->
+    <header style="background-color: #ffffff; padding: 15px 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-size: 22px; font-weight: 800; color: #1a365d; letter-spacing: -0.5px;">SECURE BANKING</div>
+        <a href="{% url 'dashboard' %}" style="text-decoration: none; color: #2b6cb0; font-weight: 600; font-size: 14px;">← Back to Dashboard</a>
+    </header>
+
+    <main style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px;">
+        <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; border-top: 4px solid #805ad5;">
+            <h2 style="color: #2d3748; margin-top: 0; text-align: center;">Split the Bill</h2>
+            <p style="text-align: center; color: #718096; margin-bottom: 30px;">Available Balance: <strong>Rs.{{ user.balance|floatformat:2 }}</strong></p>
+
+            <!-- Message block for errors/success -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div style="padding: 10px; margin-bottom: 20px; border-radius: 6px; text-align: center; font-size: 14px; background-color: #fff5f5; color: #c53030; border: 1px solid #feb2b2;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Result Box -->
+            <div id="result-box" style="display: none; padding: 15px; margin-bottom: 20px; border-radius: 6px; text-align: center; background-color: #f3f0ff; color: #553c9a; border: 1px solid #d6bcfa;">
+                <span style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">YOUR SHARE TO DEDUCT</span>
+                <strong id="per-person-amount" style="font-size: 24px;">Rs. 0.00</strong>
+            </div>
+
+            <form id="split-form" method="POST">
+                {% csrf_token %}
+                
+                <!-- 1) Total Bill Amount -->
+                <label style="display: block; color: #4a5568; font-size: 14px; font-weight: 600; margin-bottom: 8px;">Total Bill Amount (Rs.)</label>
+                <input type="number" name="total_amount" id="total_amount" placeholder="e.g. 1500" required step="0.01" 
+                       style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px; box-sizing: border-box; font-size: 16px; margin-bottom: 20px;">
+
+                <!-- 2) Account Holders Selection with Search -->
+                <label style="display: block; color: #4a5568; font-size: 14px; font-weight: 600; margin-bottom: 8px;">Select Account Holders</label>
+                <input type="text" id="userSearch" onkeyup="filterUsers()" placeholder="Search names..." 
+                       style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px 6px 0 0; box-sizing: border-box; font-size: 13px; border-bottom: none; outline: none; background-color: #fcfcfc;">
+                
+                <div id="userList" style="max-height: 150px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 0 0 6px 6px; padding: 10px; margin-bottom: 20px; background-color: #fafafa;">
+                    <div style="margin-bottom: 8px; font-size: 14px; color: #4a5568; display: flex; align-items: center;">
+                        <input type="checkbox" checked disabled style="cursor: not-allowed; margin-right: 8px;"> 
+                        <span>You ({{ user.username }})</span>
+                    </div>
+                    
+                    {% for person in active_users %}
+                    <!-- Inside the for loop in split.html -->
+                        <div class="user-item" style="margin-bottom: 8px; font-size: 14px; color: #4a5568; display: flex; align-items: center;">
+                            <!-- Add name="selected_users" and value="{{ person.id }}" -->
+                            <input type="checkbox" name="selected_users" value="{{ person.id }}" class="user-checkbox" onchange="updateMemberCount()" style="cursor: pointer; margin-right: 8px;"> 
+                            <span class="user-name">{{ person.first_name }} {{ person.last_name }} ({{ person.username }})</span>
+                        </div>
+
+                    {% endfor %}
+                </div>
+
+                <!-- 3) Number of People (Read Only) -->
+                <label style="display: block; color: #4a5568; font-size: 14px; font-weight: 600; margin-bottom: 8px;">Total People in Split</label>
+                <input type="number" name="num_people" id="num_people" value="1" readonly 
+                       style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px; box-sizing: border-box; font-size: 16px; margin-bottom: 25px; background-color: #edf2f7; cursor: not-allowed; font-weight: bold; color: #2d3748;">
+                
+                <button type="button" id="calc-btn" onclick="calculateSplit()" style="width: 100%; background-color: #805ad5; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 6px rgba(128, 90, 213, 0.2); margin-bottom: 10px;">
+                    Calculate Split
+                </button>
+
+                <!-- 4) Confirm and Pay Button (Hidden until calculated) -->
+                <button type="submit" id="pay-btn" style="display: none; width: 100%; background-color: #38a169; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 6px rgba(56, 161, 105, 0.2); margin-bottom: 10px;">
+                    Confirm & Deduct My Share
+                </button>
+
+                <button type="reset" onclick="resetForm()" style="width: 100%; background-color: transparent; color: #a0aec0; padding: 10px; border: none; font-weight: 600; font-size: 13px; cursor: pointer;">
+                    Reset
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+    function filterUsers() {
+        const input = document.getElementById('userSearch');
+        const filter = input.value.toLowerCase();
+        const items = document.getElementsByClassName('user-item');
+        for (let i = 0; i < items.length; i++) {
+            const name = items[i].getElementsByClassName('user-name')[0].innerText;
+            items[i].style.display = name.toLowerCase().indexOf(filter) > -1 ? "flex" : "none";
+        }
+    }
+
+    function updateMemberCount() {
+        const checkboxes = document.querySelectorAll('.user-checkbox:checked').length;
+        document.getElementById('num_people').value = checkboxes + 1;
+        document.getElementById('pay-btn').style.display = 'none'; // Re-calculate if count changes
+    }
+
+    function calculateSplit() {
+        const total = document.getElementById('total_amount').value;
+        const people = document.getElementById('num_people').value;
+        const resultBox = document.getElementById('result-box');
+        const display = document.getElementById('per-person-amount');
+        const payBtn = document.getElementById('pay-btn');
+
+        if (total > 0 && people > 0) {
+            const splitAmount = (total / people).toFixed(2);
+            display.innerText = "Rs. " + splitAmount;
+            resultBox.style.display = "block";
+            payBtn.style.display = "block"; // Show the pay button
+        } else {
+            alert("Please enter a valid amount.");
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('pay-btn').style.display = 'none';
+        document.getElementById('num_people').value = 1;
+        const items = document.getElementsByClassName('user-item');
+        for (let i = 0; i < items.length; i++) { items[i].style.display = "flex"; }
+    }
+    </script>
+</body>
+</html>

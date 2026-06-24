@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Requests - Secure Banking</title>
+</head>
+<body style="margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; min-height: 100vh;">
+
+    <!-- Header -->
+    <header style="background-color: #ffffff; padding: 15px 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-size: 22px; font-weight: 800; color: #1a365d; letter-spacing: -0.5px;">SECURE BANKING</div>
+        <a href="{% url 'dashboard' %}" style="text-decoration: none; color: #2b6cb0; font-weight: 600; font-size: 14px;">← Back to Dashboard</a>
+    </header>
+
+    <main style="flex: 1; display: flex; justify-content: center; padding: 40px 20px;">
+        <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 600px; border-top: 4px solid #d69e2e;">
+            
+            <h2 style="color: #2d3748; margin-top: 0; text-align: center;">Pending Bill Requests</h2>
+            <p style="text-align: center; color: #718096; margin-bottom: 30px;">Review and pay your shares from shared bills.</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div style="padding: 12px; margin-bottom: 20px; border-radius: 6px; text-align: center; font-size: 14px; background-color: #c6f6d5; color: #2f855a; border: 1px solid #68d391;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                {% for req in pending_requests %}
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px; background-color: #fafafa;">
+                    <div>
+                        <span style="display: block; font-size: 13px; color: #a0aec0; font-weight: 600; text-transform: uppercase;">Requested By</span>
+                        <strong style="font-size: 16px; color: #2d3748;">{{ req.creator.first_name }} {{ req.creator.last_name }}</strong>
+                        <span style="display: block; font-size: 12px; color: #718096; margin-top: 4px;">{{ req.description }}</span>
+                    </div>
+                    
+                    <div style="text-align: right;">
+                        <span style="display: block; font-size: 18px; font-weight: 800; color: #d69e2e; margin-bottom: 8px;">Rs.{{ req.amount }}</span>
+                        <form method="POST" action="{% url 'pay_split' req.id %}">
+                            {% csrf_token %}
+                            <button type="submit" style="background-color: #38a169; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.2s;">
+                                Pay Now
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                <div style="text-align: center; padding: 40px; color: #a0aec0;">
+                    <div style="font-size: 40px; margin-bottom: 10px;">📩</div>
+                    <p>No pending requests at the moment.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

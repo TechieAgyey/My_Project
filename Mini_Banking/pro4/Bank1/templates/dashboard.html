@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CHETU BANKING</title>
+</head>
+<body style="margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; min-height: 100vh;">
+
+<!-- Header -->
+<header style="background-color: #ffffff; padding: 15px 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center;">
+    
+    <!-- Logo and Title Container -->
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <!-- Bank Logo (Replace 'logo.png' with your actual image path or a URL) -->
+        <img src="https://pngimg.com/d/bank_PNG9.png" alt="Logo" style="height: 35px; width: auto; object-fit: contain;">
+        
+        <div style="font-size: 22px; font-weight: 800; color: #1a365d; letter-spacing: -0.5px;">CHETU BANKING</div>
+    </div>
+
+    <div>
+        {% if user.is_authenticated %}
+            <span style="margin-right: 15px; color: #4a5568; font-size: 14px;">Welcome, <strong>{{ user.username }}</strong></span>
+            <a href="{% url 'logout' %}" style="text-decoration: none; color: #e53e3e; font-weight: 600; font-size: 14px;">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}" style="text-decoration: none; color: #4a5568; margin-right: 25px; font-weight: 600; font-size: 14px;">Login</a>
+            <a href="{% url 'signup' %}" style="text-decoration: none; background-color: #2b6cb0; color: white; padding: 10px 22px; border-radius: 6px; font-weight: bold; font-size: 14px; transition: 0.3s;">Sign Up</a>
+        {% endif %}
+    </div>
+</header>
+
+
+    <!-- Main Content Area -->
+    <main style="flex: 1; padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box;">
+        
+        <!-- Display Django Messages with id for Timer -->
+        {% if messages %}
+            <div id="django-messages">
+                {% for message in messages %}
+                    <div style="padding: 15px; margin-bottom: 25px; border-radius: 8px; text-align: center; font-weight: 600; transition: opacity 0.5s ease;
+                        {% if message.tags == 'error' %} background-color: #fed7d7; color: #c53030; border: 1px solid #fc8181; 
+                        {% else %} background-color: #c6f6d5; color: #2f855a; border: 1px solid #68d391; {% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+            
+        {% block content %}
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h2 style="color: #2d3748; margin: 0; font-weight: 700;">Dashboard Overview</h2>
+            
+        <!-- Action Buttons (All in one line) -->
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <!-- Deposit -->
+                <a href="{% url 'credit_view' %}" style="text-decoration: none; background-color: #38a169; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(56, 161, 105, 0.2);">+ Deposit</a>
+                
+                <!-- Withdraw -->
+                <a href="{% url 'debit_view' %}" style="text-decoration: none; background-color: #e53e3e; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(229, 62, 62, 0.2);">- Withdraw</a>
+                
+                <!-- Transfer -->
+                <a href="{% url 'transfer_view' %}" style="text-decoration: none; background-color: #3182ce; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(49, 130, 206, 0.2);">⇄ Transfer</a>
+
+                <!-- Split -->
+                <a href="{% url 'split_money' %}" style="text-decoration: none; background-color: #805ad5; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(128, 90, 213, 0.2);">÷ Split</a>
+
+                <!-- Requests (Added here) -->
+                <a href="{% url 'split_request' %}" style="text-decoration: none; background-color: #d69e2e; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(214, 158, 46, 0.2); display: flex; align-items: center; gap: 8px;">
+                🔔 Requests
+                {% if request_count > 0 %}
+                    <span style="background-color: #e53e3e; color: white; font-size: 10px; padding: 2px 6px; border-radius: 50%; border: 1px solid white;">
+                        {{ request_count }}
+                    </span>
+                {% endif %}
+                </a>
+            </div>
+
+
+        </div>
+        
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+
+            
+            
+            <!-- Account Balance -->
+            <div style="flex: 1; min-width: 280px; background-color: #ffffff; padding: 25px; border-radius: 12px; border-top: 4px solid #2b6cb0; box-shadow: 0 4px 6px rgba(0,0,0,0.04);">
+                <p style="margin: 0; color: #718096; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Current Balance</p>
+                <h3 style="margin: 12px 0 0; color: #1a365d; font-size: 32px; font-weight: 700;">Rs.{{ balance|floatformat:2 }}</h3>
+                <p style="margin: 5px 0 0; color: #a0aec0; font-size: 11px;">Updated: {% now "SHORT_DATETIME_FORMAT" %}</p>
+            </div>
+
+            <!-- Balance Credited -->
+            <div style="flex: 1; min-width: 280px; background-color: #ffffff; padding: 25px; border-radius: 12px; border-top: 4px solid #38a169; box-shadow: 0 4px 6px rgba(0,0,0,0.04);">
+                <p style="margin: 0; color: #718096; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Monthly Credits</p>
+                <h3 style="margin: 12px 0 0; color: #38a169; font-size: 32px; font-weight: 700;">+Rs.{{ credited|floatformat:2 }}</h3>
+                <p style="margin: 5px 0 0; color: #38a169; font-size: 11px;">Updated: {% now "SHORT_DATETIME_FORMAT" %}</p>
+            </div>
+
+            <!-- Balance Debited -->
+            <div style="flex: 1; min-width: 280px; background-color: #ffffff; padding: 25px; border-radius: 12px; border-top: 4px solid #e53e3e; box-shadow: 0 4px 6px rgba(0,0,0,0.04);">
+                <p style="margin: 0; color: #718096; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Monthly Debits</p>
+                <h3 style="margin: 12px 0 0; color: #e53e3e; font-size: 32px; font-weight: 700;">-Rs.{{ debited|floatformat:2 }}</h3>
+                <p style="margin: 5px 0 0; color: #e53e3e; font-size: 11px;">Updated: {% now "SHORT_DATETIME_FORMAT" %}</p>
+            </div>
+        </div>
+
+        <!-- NEW: Transaction History Section (Scrollable) -->
+        <div style="margin-top: 30px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); overflow: hidden; border: 1px solid #e2e8f0;">
+            <div style="padding: 15px 25px; border-bottom: 1px solid #edf2f7; background-color: #f8fafc;">
+                <h3 style="margin: 0; color: #2d3748; font-size: 16px; font-weight: 700;">Transaction History</h3>
+            </div>
+            
+            <!-- Fixed height to roughly 4 rows (~240px) with internal scroll -->
+            <div style="max-height: 240px; overflow-y: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead style="position: sticky; top: 0; background: #f8fafc; z-index: 10; box-shadow: 0 1px 0 #edf2f7;">
+                        <tr style="color: #718096; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">
+                            <th style="padding: 12px 25px;">Type</th>
+                            <th style="padding: 12px 25px;">Amount</th>
+                            <th style="padding: 12px 25px;">Date & Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tx in transactions %}
+                        <tr style="border-bottom: 1px solid #f7fafc; font-size: 14px; color: #4a5568;">
+                            <td style="padding: 12px 25px;">
+                                <span style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+                                    {% if tx.transaction_type == 'CREDIT' %} background-color: #c6f6d5; color: #2f855a; {% else %} background-color: #fed7d7; color: #c53030; {% endif %}">
+                                    {{ tx.transaction_type }}
+                                </span>
+                            </td>
+                            <td style="padding: 12px 25px; font-weight: 600;">
+                                {% if tx.transaction_type == 'CREDIT' %}+{% else %}-{% endif %}Rs.{{ tx.amount|floatformat:2 }}
+                            </td>
+                            <td style="padding: 12px 25px; color: #a0aec0; font-size: 12px;">{{ tx.timestamp|date:"d M, Y H:i" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" style="padding: 40px; text-align: center; color: #a0aec0;">No transactions yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endblock %}
+
+    </main>
+
+    <!-- Ultra-Compact Footer -->
+    <footer style="background-color: #1a202c; color: #a0aec0; padding: 12px 20px; margin-top: auto; border-top: 1px solid #2d3748;">
+        <div style="max-width: 700px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 24px; height: 24px; background-color: #2b6cb0; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                    <span style="color: white; font-weight: bold; font-size: 14px;">S</span>
+                </div>
+                <span style="color: white; font-size: 13px; font-weight: 700;">CHETU BANKING</span>
+                <span style="font-size: 11px; margin-left: 10px; border-left: 1px solid #4a5568; padding-left: 10px;">© {% now "Y" %} Member FDIC</span>
+            </div>
+            <div style="display: flex; gap: 15px; font-size: 11px;">
+                <a href="#" style="color: inherit; text-decoration: none;">Security</a>
+                <a href="#" style="color: inherit; text-decoration: none;">Privacy</a>
+                <a href="#" style="color: inherit; text-decoration: none;">Contact</a>
+                <span style="color: #4a5568;">1-800-SECURE</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auto-hide Message Timer (2 Seconds) -->
+    <script>
+        setTimeout(function() {
+            var msgContainer = document.getElementById('django-messages');
+            if (msgContainer) {
+                msgContainer.style.opacity = '0';
+                setTimeout(function() {
+                    msgContainer.style.display = 'none';
+                }, 500); // fade duration
+            }
+        }, 2000); // 2 seconds
+    </script>
+
+</body>
+</html>
