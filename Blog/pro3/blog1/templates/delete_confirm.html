@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="block" style="text-align: center;">
+    <h2>Are you sure?</h2>
+    <p>You are about to delete: <i>"{{ post.message|truncatechars:50 }}"</i></p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" style="padding:10px 20px; background:#dc3545; color:white; border:none; border-radius:4px; cursor:pointer;">Yes, Delete it</button>
+        <a href="{% url 'dashboard' %}" style="margin-left:15px; color:#666;">Cancel</a>
+    </form>
+</div>
+{% endblock %}

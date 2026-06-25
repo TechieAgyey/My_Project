@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Register - My Blog{% endblock %}
+
+{% block content %}
+<div class="block">
+    <h2 style="color: #444; text-align: center;">Create an Account</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Choose a Username" required style="width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; border-radius:4px; box-sizing:border-box;">
+        <input type="password" name="password" placeholder="Choose a Password" required style="width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; border-radius:4px; box-sizing:border-box;">
+        <button type="submit" style="width:100%; padding:12px; background:#007bff; color:white; border:none; border-radius:4px; cursor:pointer; font-weight: bold; font-size: 1rem;">
+            Join Now
+        </button>
+    </form>
+    
+    <div style="border-top: 1px solid #eee; margin-top: 20px; padding-top: 15px; text-align: center;">
+        <p style="font-size: 0.9rem; color: #666;">
+            Already a member? 
+            <a href="{% url 'login' %}" style="color: #28a745; text-decoration: none; font-weight: bold;">Login here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

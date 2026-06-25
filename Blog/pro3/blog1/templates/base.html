@@ -1,0 +1,67 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Bloggers.com{% endblock %}</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; background: #f4f4f4; display: flex; flex-direction: column; min-height: 100vh; }
+        header { background: #333; color: white; padding: 15px; text-align: center; }
+        footer { background: #333; color: white; text-align: center; padding: 10px; margin-top: auto; }
+        main { padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .block { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); width: 100%; max-width: 500px; margin-bottom: 20px; }
+        nav { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; }
+        nav a { color: white; text-decoration: none; margin: 0 10px; font-size: 0.9rem; }
+        nav a:hover { text-decoration: underline; }
+        .user-greet { color: #aaa; font-style: italic; margin-left: 10px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+        .logout-btn { color: #ff6b6b !important; font-weight: bold; }
+        .django-msg { transition: opacity 0.5s ease; opacity: 1; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <b style="font-size: 1.2rem; margin-right: 15px; letter-spacing: 1px;">Bloggers.com</b>
+            <a href="{% url 'feed' %}">Public Feed</a>
+            {% if user.is_authenticated %}
+
+                | <a href="{% url 'dashboard' %}">My Posts</a> 
+                | <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+                <span class="user-greet">
+                    {% if user.profile.image %}
+                        <img src="{{ user.profile.image.url }}" style="width: 25px; height: 25px; border-radius: 50%; object-fit: cover; border: 1px solid #555;">
+                    {% endif %}
+                    Hi, {{ user.username }}
+                </span>
+            {% else %}
+                | <a href="{% url 'login' %}">Sign In </a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="django-msg" style="padding: 10px; background: {% if message.tags == 'error' %}#f8d7da{% else %}#d4edda{% endif %}; color: {% if message.tags == 'error' %}#721c24{% else %}#155724{% endif %}; border: 1px solid {% if message.tags == 'error' %}#f5c6cb{% else %}#c3e6cb{% endif %}; border-radius: 4px; margin-bottom: 20px; width: 100%; max-width: 500px; text-align: center;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer><p>&copy; 2024 Bloggers.com</p></footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.django-msg');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500);
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

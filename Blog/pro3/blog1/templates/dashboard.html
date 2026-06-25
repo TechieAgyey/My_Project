@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<!-- User Profile Header -->
+<div class="block" style="border-top: 4px solid #007bff; display: flex; align-items: center; gap: 20px;">
+    <img src="{{ user.profile.image.url }}" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #eee;">
+    <div>
+        <h2 style="margin: 0; color: #333;">{{ user.username }}</h2>
+        <p style="margin: 0; color: #777; font-size: 0.9rem;">Member since {{ user.date_joined|date:"M Y" }}</p>
+        <span style="background: #e9ecef; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; font-weight: bold; color: #495057;">
+            Total Posts: {{ posts.count }}
+        </span>
+    </div>
+</div>
+
+<h2 style="color: #444; width: 100%; max-width: 500px; margin-bottom: 15px;">My Post History</h2>
+
+{% for post in posts %}
+    <div class="block" style="border-left: 5px solid #6c757d;">
+        <span style="font-weight: bold; color: #333;">You shared:</span>
+        <p style="margin: 10px 0; color: #333; line-height: 1.5;">{{ post.message }}</p>
+        
+        <!-- Stats Preview -->
+        <div style="font-size: 0.8rem; color: #888; margin-bottom: 10px;">
+            ❤️ {{ post.likes.count }} Likes | 💬 {{ post.comments.count }} Comments
+        </div>
+
+        <!-- CRUD ACTIONS -->
+        <div style="display: flex; gap: 15px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
+            <a href="{% url 'edit_post' post.pk %}" style="color: #007bff; text-decoration: none; font-size: 0.85rem; font-weight: bold;">
+                Edit ✏️
+            </a>
+            <a href="{% url 'delete_post' post.pk %}" style="color: #dc3545; text-decoration: none; font-size: 0.85rem; font-weight: bold;">
+                Delete 🗑️
+            </a>
+        </div>
+
+        <div style="font-size: 0.75rem; color: #bbb; text-align: right; margin-top: 5px;">
+            {{ post.created_at|date:"M d, Y H:i" }}
+        </div>
+    </div>
+{% empty %}
+    <div class="block" style="text-align: center;">
+        <p style="color: #666;">You haven't posted anything yet!</p>
+        <a href="{% url 'feed' %}" style="color: #28a745; font-weight: bold; text-decoration: none;">Go to the feed to share an update →</a>
+    </div>
+{% endfor %}
+{% endblock %}

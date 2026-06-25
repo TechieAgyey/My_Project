@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block title %}Public Feed{% endblock %}
+
+{% block content %}
+
+<!-- 1. GUEST BANNER -->
+{% if not user.is_authenticated %}
+<div id="guest-banner" style="background: #007bff; color: white; padding: 15px; width: 100%; max-width: 800px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    👋 Welcome! Please join us to start posting and liking updates.
+</div>
+{% endif %}
+
+<!-- FEED WRAPPER (Side-by-Side Layout) -->
+<div class="feed-container" style="display: flex; gap: 20px; width: 100%; max-width: 1000px; align-items: flex-start;">
+    
+    <!-- LEFT SIDE: BLOG UPDATES (66%) -->
+    <div class="feed-left" style="flex: 66%;">
+        <h2 style="color: #444; margin-top: 0;">Recent Updates</h2>
+        
+        {% for post in posts %}
+            <div class="block" style="border-left: 5px solid {% if post.author == user %}#28a745{% else %}#007bff{% endif %}; width: 100%; box-sizing: border-box;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <img src="{{ post.author.profile.image.url }}" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #eee;">
+                    <span style="font-weight: bold; color: {% if post.author == user %}#28a745{% else %}#007bff{% endif %};">
+                        {{ post.author.username }} 
+                        {% if post.author == user %}(You){% endif %}
+                    </span>
+                </div>
+
+                <p style="margin: 10px 0; color: #333; line-height: 1.5;">{{ post.message }}</p>
+                
+                <!-- BUTTON BAR (Like + Comment) -->
+                <div style="display: flex; align-items: center; gap: 15px; border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px;">
+                    
+                    <!-- LIKE BUTTON -->
+                    <form action="{% url 'like_post' post.pk %}" method="POST" style="margin: 0;">
+                        {% csrf_token %}
+                        <button type="submit" class="action-btn" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 1.2rem;">
+                            <span style="color: #ff4d4d;">{% if user in post.likes.all %}❤️{% else %}🤍{% endif %}</span>
+                            <span style="font-weight: bold; color: #444; font-size: 1rem;">{{ post.likes.count }}</span>
+                        </button>
+                    </form>
+
+                    <!-- COMMENT BUTTON -->
+                    <button onclick="openCommentModal('{{ post.id }}')" class="action-btn" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 1.2rem;">
+                        <span style="color: #0095f6;">💬</span>
+                        <span style="font-weight: bold; color: #444; font-size: 1rem;">{{ post.comments.count }}</span>
+                    </button>
+                    
+                    <div style="font-size: 0.8rem; color: #888; margin-left: auto;">
+                        {{ post.created_at|timesince }} ago
+                    </div>
+                </div>
+
+                <!-- RECENT COMMENTS PREVIEW -->
+                <div style="margin-top: 10px; font-size: 0.85rem; color: #666;">
+                    {% for comment in post.comments.all|slice:":2" %}
+                        {% if not comment.parent and not comment.is_hidden %}
+                            <div><b>{{ comment.author.username }}</b> {{ comment.text }}</div>
+                        {% endif %}
+                    {% endfor %}
+                    {% if post.comments.count > 2 %}
+                        <a href="javascript:void(0)" onclick="openCommentModal('{{ post.id }}')" style="color: #999; text-decoration: none; font-size: 0.8rem;">View all {{ post.comments.count }} comments...</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- COMMENT POPUP MODAL -->
+            <div id="modal-{{ post.id }}" class="comment-modal" style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center;">
+                <div style="background: white; padding: 20px; border-radius: 15px; width: 90%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative;">
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                        <h3 style="margin: 0; font-size: 1.1rem;">Comments</h3>
+                        <button onclick="closeCommentModal('{{ post.id }}')" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999;">&times;</button>
+                    </div>
+
+                    <div style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;">
+                        {% for comment in post.comments.all %}
+                            {% if not comment.parent %}
+                            <div style="margin-bottom: 15px; border-left: 2px solid #eee; padding-left: 10px; opacity: {% if comment.is_hidden %}0.5{% else %}1{% endif %};">
+                                <div style="display: flex; gap: 10px;">
+                                    <img src="{{ comment.author.profile.image.url }}" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;">
+                                    <div style="flex-grow: 1;">
+                                        <div style="font-size: 0.9rem; background: #f8f9fa; padding: 8px; border-radius: 10px;">
+                                            <b>{{ comment.author.username }}</b> 
+                                            {% if comment.is_hidden %}<i>(Hidden)</i>{% else %}{{ comment.text }}{% endif %}
+                                        </div>
+                                        <div style="font-size: 0.75rem; margin-top: 4px; display: flex; gap: 10px;">
+                                            <a href="javascript:void(0)" onclick="prepareReply('{{ post.id }}', '{{ comment.author.username }}', '{{ comment.id }}')" style="color: #007bff; text-decoration: none;">Reply</a>
+                                            {% if user == comment.author or user == post.author %}
+                                                <a href="{% url 'toggle_comment' comment.id %}" style="color: #666; text-decoration: none;">{% if comment.is_hidden %}Unhide{% else %}Hide{% endif %}</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Nested Replies -->
+                                {% for reply in comment.replies.all %}
+                                <div style="display: flex; gap: 10px; margin-top: 10px; margin-left: 40px;">
+                                    <img src="{{ reply.author.profile.image.url }}" style="width: 25px; height: 25px; border-radius: 50%; object-fit: cover;">
+                                    <div style="font-size: 0.85rem; background: #f0f2f5; padding: 6px 10px; border-radius: 10px;">
+                                        <b>{{ reply.author.username }}</b> {{ reply.text }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    {% if user.is_authenticated %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        <input type="hidden" name="parent_id" id="parent-id-{{ post.id }}" value="">
+                        
+                        <div id="reply-to-{{ post.id }}" style="display:none; font-size: 0.75rem; color: #007bff; margin-bottom: 5px;">
+                            Replying to @<span id="reply-user-{{ post.id }}"></span> 
+                            <span onclick="cancelReply('{{ post.id }}')" style="cursor:pointer; color:red; margin-left:5px;">(Cancel)</span>
+                        </div>
+
+                        <textarea name="comment_text" id="textarea-{{ post.id }}" placeholder="Add a comment..." required 
+                            style="width: 100%; border: 1px solid #eee; border-radius: 8px; padding: 10px; height: 60px; resize: none; font-family: inherit;"></textarea>
+                        <button type="submit" style="width: 100%; margin-top: 10px; background: #0095f6; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer;">Post</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- RIGHT SIDE: SHARE AN UPDATE (34%) -->
+    <div class="feed-right" style="flex: 34%; position: sticky; top: 20px;">
+        <div class="block" style="border-top: 4px solid #28a745; width: 100%; box-sizing: border-box;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                {% if user.is_authenticated %}
+                    <img src="{{ user.profile.image.url }}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #eee;">
+                    <h3 style="margin: 0; font-size: 1.1rem; color: #444;">Share an update</h3>
+                {% else %}
+                    <h3 style="margin: 0; font-size: 1.1rem; color: #444;">Join the community</h3>
+                {% endif %}
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                <textarea name="message" required placeholder="What's on your mind?" 
+                    style="width:100%; padding:12px; border:1px solid #eee; border-radius:8px; height: 100px; box-sizing: border-box; background: #fafafa; font-family: inherit; resize: none;"></textarea>
+                
+                {% if user.is_authenticated %}
+                    <button type="submit" style="width:100%; padding:10px; background:#28a745; color:white; border:none; border-radius:6px; cursor:pointer; margin-top:10px; font-weight: bold;">
+                        Post Update
+                    </button>
+                {% else %}
+                    <button type="button" onclick="window.location.href='{% url 'login' %}'" style="width:100%; padding:10px; background:#007bff; color:white; border:none; border-radius:6px; cursor:pointer; margin-top:10px; font-weight: bold;">
+                        Login to Post
+                    </button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .feed-container { display: flex; flex-direction: row; }
+    @media (max-width: 800px) {
+        .feed-container { flex-direction: column-reverse; }
+        .feed-left, .feed-right { flex: 100% !important; width: 100% !important; }
+    }
+    .action-btn:hover { transform: scale(1.1); transition: 0.2s; }
+    .comment-modal { backdrop-filter: blur(2px); }
+</style>
+
+<script>
+    function openCommentModal(id) {
+        document.getElementById('modal-' + id).style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeCommentModal(id) {
+        document.getElementById('modal-' + id).style.display = 'none';
+        document.body.style.overflow = 'auto';
+        cancelReply(id);
+    }
+
+    function prepareReply(postId, username, commentId) {
+        document.getElementById('parent-id-' + postId).value = commentId;
+        document.getElementById('reply-user-' + postId).innerText = username;
+        document.getElementById('reply-to-' + postId).style.display = 'block';
+        const txt = document.getElementById('textarea-' + postId);
+        txt.value = '@' + username + ' ';
+        txt.focus();
+    }
+
+    function cancelReply(postId) {
+        document.getElementById('parent-id-' + postId).value = '';
+        document.getElementById('reply-to-' + postId).style.display = 'none';
+        document.getElementById('textarea-' + postId).value = '';
+    }
+
+    window.onclick = function(event) {
+        if (event.target.classList.contains('comment-modal')) {
+            event.target.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    }
+</script>
+
+{% endblock %}
