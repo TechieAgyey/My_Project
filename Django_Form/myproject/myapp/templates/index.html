@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% csrf_token %}
+    <button>Submit</button>
+      <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 350px;">
+        <h2 style="text-align: center; color: #1c1e21; margin-bottom: 20px;">User Details</h2>
+        
+        <form action="#">
+            <!-- Name Field -->
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-size: 14px; font-weight: bold; color: #4b4f56; margin-bottom: 5px;">Full Name</label>
+                <input type="text" placeholder="Enter name" id=name required
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; outline: none;">
+            </div>
+
+            <!-- Mobile Field -->
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-size: 14px; font-weight: bold; color: #4b4f56; margin-bottom: 5px;">Mobile Number</label>
+                <input type="tel" id=mobile placeholder="10-digit number" required 
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; outline: none;">
+            </div>
+
+            <!-- Age Field -->
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 14px; font-weight: bold; color: #4b4f56; margin-bottom: 5px;">Age</label>
+                <input type="number" id="age" placeholder="Enter age" min="1" max="100" required 
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; outline: none;">
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submit-form" 
+                style="width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer;">
+                Submit Details
+            </button>
+        </form>
+    </div>
+
+    <div id="table"></div>
+
+<script>
+    $(function(){
+        // *********************show table************************
+            function showtabel(result)
+                {
+                    let output=`<table class='table'>
+                            <tr class="table-primary">
+                                    <th> ID</th>
+                                    <th> Name</th>
+                                    <th> Mobile</th>
+                                    <th> Age</th>
+                            </tr>
+                                    `;
+                    for(let i=0;i<result.length;i++)
+                            {
+                             output+=`<tr>
+                                    <td> ${result[i]['id']}</td>
+                                    <td> ${result[i]['name']}</td>
+                                    <td> ${result[i]['mobile']}</td>
+                                    <td> ${result[i]['age']}</td>
+                                    </tr>`;
+                            }
+                        output+='</table>';
+
+                        $('#table').html(output);
+                }
+        // ***********************End table****************************
+                function read()
+                            {
+                                   $.ajax({
+                    url:"{% url 'reteriveData' %}",
+                    method:"GET",
+                    success:function(result){
+                       showtabel(result);
+                    }
+
+                })//index jquqery
+                            }//read closing
+            $("button").click(function(){
+             read();
+
+            });//button click
+// *******************************create forms************************************
+                $("#submit-form").click(function(event){
+                        event.preventDefault();
+                        let name=$('#name').val();
+                        let mobile=$('#mobile').val();
+                        let age=$('#age').val();
+                      
+                        $.ajax({
+                            url:"{% url 'registerPerson' %}",
+                            method:"POST",
+                            headers: {'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()},
+                            data:{name:name,mobile:mobile,age:age},
+                            success:function(result)
+                                {
+                                        if(result)
+                                            {
+                                                    read();
+                                            }
+                                        else{
+                                            alert("Already exist")
+                                        }
+                                }
+                        })
+                }) ;
+
+    });//jqery start
+</script>
+</body>
+</html>
