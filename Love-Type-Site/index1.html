@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Ishitha ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: linear-gradient(-45deg, #ff758c, #ff7eb3, #ff9a9e, #fad0c4, #ff758c);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 30px 20px;
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50% }
+  50% { background-position: 100% 50% }
+  100% { background-position: 0% 50% }
+}
+
+.main-wrapper {
+  display: flex;
+  gap: 40px;
+  max-width: 900px;
+  width: 100%;
+  align-items: stretch;
+  z-index: 2;
+  animation: fadeUp 1.5s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── LEFT SIDE ─── */
+.left-side {
+  flex: 0 0 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.photo-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3/4;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.25),
+    0 0 0 4px rgba(255, 255, 255, 0.25),
+    inset 0 0 30px rgba(255, 255, 255, 0.05);
+}
+
+.photo-frame img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+}
+
+.photo-frame img.active {
+  opacity: 1;
+}
+
+.photo-dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.photo-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  transition: 0.4s;
+}
+
+.photo-dots span.active {
+  background: white;
+  transform: scale(1.3);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+}
+
+/* ─── RIGHT SIDE ─── */
+.right-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.right-side h1 {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: slideInRight 0.8s 0.3s ease forwards;
+}
+
+.right-side h1 span {
+  color: #fff3cd;
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.letter-box {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 24px 26px;
+  margin-bottom: 24px;
+  text-align: left;
+  opacity: 0;
+  animation: slideInRight 0.8s 0.6s ease forwards;
+}
+
+.letter-box p {
+  font-weight: 300;
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.letter-box p + p {
+  margin-top: 12px;
+}
+
+.letter-box .highlight {
+  font-weight: 600;
+  color: #fff3cd;
+}
+
+.question-section {
+  opacity: 0;
+  animation: slideInRight 0.8s 0.9s ease forwards;
+}
+
+.question-section h3 {
+  font-size: 19px;
+  font-weight: 400;
+  margin-bottom: 18px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+.btn-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 13px 32px;
+  border: none;
+  border-radius: 30px;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  letter-spacing: 0.3px;
+}
+
+.yes {
+  background: white;
+  color: #ff4d6d;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.5);
+}
+
+.yes:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 30px rgba(255, 255, 255, 0.7);
+}
+
+.no {
+  background: rgba(255, 77, 109, 0.6);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  position: relative;
+}
+
+.no:hover {
+  background: rgba(255, 77, 109, 0.8);
+}
+
+/* ─── FLOATING HEARTS ─── */
+.heart {
+  position: fixed;
+  pointer-events: none;
+  animation: floatUp linear forwards;
+  z-index: 0;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.85; }
+  60% { opacity: 0.5; }
+  100% { transform: translateY(-105vh) rotate(360deg) scale(0.3); opacity: 0; }
+}
+
+/* ─── LOVE MESSAGE OVERLAY ─── */
+.love-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(120, 10, 30, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+  transition: opacity 0.5s ease;
+}
+
+.love-overlay.show {
+  display: flex;
+  animation: fadeIn 0.4s ease;
+}
+
+.love-overlay.fade-out {
+  animation: fadeOut 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.love-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 3px solid rgba(255, 77, 109, 0.5);
+  border-radius: 32px;
+  padding: 55px 50px;
+  text-align: center;
+  max-width: 460px;
+  width: 92%;
+  box-shadow:
+    0 0 80px rgba(255, 77, 109, 0.5),
+    0 30px 60px rgba(0, 0, 0, 0.3),
+    inset 0 0 40px rgba(255, 200, 200, 0.15);
+  animation: popIn 0.5s 0.15s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.love-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    transparent,
+    rgba(255, 77, 109, 0.1),
+    transparent,
+    rgba(255, 200, 100, 0.1),
+    transparent
+  );
+  animation: cardShine 4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes cardShine {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.love-card .big-heart {
+  font-size: 72px;
+  display: block;
+  margin-bottom: 20px;
+  animation: heartbeat 1s ease infinite;
+  filter: drop-shadow(0 0 20px rgba(255, 77, 109, 0.6));
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.25); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.18); }
+  56% { transform: scale(1); }
+}
+
+.love-card h2 {
+  font-size: 38px;
+  font-weight: 900;
+  margin-bottom: 16px;
+  color: #d6336c;
+  text-shadow: 0 2px 15px rgba(214, 51, 108, 0.3);
+  position: relative;
+  z-index: 1;
+  letter-spacing: -0.5px;
+}
+
+.love-card p {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.7;
+  color: #5a2030;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  body {
+    padding: 24px 16px;
+    align-items: flex-start;
+  }
+  .main-wrapper {
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+  }
+  .left-side {
+    flex: none;
+    width: 55vw;
+    max-width: 260px;
+  }
+  .photo-frame {
+    aspect-ratio: 4/5;
+  }
+  .right-side {
+    width: 100%;
+    max-width: 400px;
+    padding: 0;
+  }
+  .right-side h1 {
+    font-size: 22px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .letter-box {
+    padding: 16px 18px;
+    margin-bottom: 20px;
+  }
+  .letter-box p {
+    font-size: 13px;
+    line-height: 1.75;
+  }
+  .question-section h3 {
+    font-size: 17px;
+    text-align: center;
+  }
+  .btn-row {
+    justify-content: center;
+  }
+  button {
+    padding: 11px 26px;
+    font-size: 14px;
+  }
+  .love-card {
+    padding: 40px 28px;
+  }
+  .love-card .big-heart { font-size: 56px; }
+  .love-card h2 { font-size: 28px; }
+  .love-card p { font-size: 16px; }
+  .heart { display: none; }
+  .heart.show { display: block; }
+}
+
+@media (max-width: 380px) {
+  .left-side { width: 60vw; }
+  .right-side h1 { font-size: 20px; }
+  .letter-box p { font-size: 12px; }
+  .letter-box { padding: 14px 14px; }
+  button { padding: 10px 22px; font-size: 13px; }
+  .love-card { padding: 32px 20px; }
+  .love-card .big-heart { font-size: 48px; }
+  .love-card h2 { font-size: 24px; }
+  .love-card p { font-size: 14px; }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  body { align-items: center; }
+  .main-wrapper {
+    flex-direction: row;
+    gap: 24px;
+    align-items: center;
+  }
+  .left-side {
+    flex: 0 0 200px;
+    width: 200px;
+  }
+  .photo-frame { aspect-ratio: 3/4; }
+  .right-side h1 { text-align: left; font-size: 20px; }
+  .question-section h3 { text-align: left; }
+  .btn-row { justify-content: flex-start; }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="main-wrapper">
+
+  <!-- LEFT — Photo Slideshow -->
+  <div class="left-side">
+    <div class="photo-frame" id="photoFrame">
+      <img src="pic1.jpeg" class="active" alt="Ishitha">
+      <img src="pic2.jpeg" alt="Ishitha">
+      <img src="pic3.jpeg" alt="Ishitha">
+      <img src="pic4.jpeg" alt="Ishitha">
+      <img src="pic5.jpeg" alt="Ishitha">
+      <img src="pic6.jpeg" alt="Ishitha">
+    </div>
+    <div class="photo-dots" id="photoDots">
+      <span class="active"></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <!-- RIGHT — Message -->
+  <div class="right-side">
+    <h1>Hey <span>Ishitha</span> ❤️<br>This is just for you</h1>
+
+    <div class="letter-box">
+      <p>
+        There are people who walk into your life and quietly rearrange
+        everything — the way you smile without reason, the way silence
+        starts feeling like a conversation, the way ordinary days start
+        feeling like <span class="highlight">something worth remembering</span>.
+      </p>
+      <p>
+        You did all of that without even trying. You turned my world into
+        a place I actually want to stay in. Every laugh we share, every
+        silly discussion about how to make you potential girlfriend, every late-night talk — they all add up to something
+        I can't quite put into words, but I <span class="highlight">feel it
+        everywhere</span>.
+      </p>
+      <p>
+        So this little page? It's just my way of saying — you matter.
+        More than you'll ever know. More than I'll ever be able to
+        explain. You made me very happy <span class="highlight">beautiful</span>. ✨
+      </p>
+    </div>
+
+    <div class="question-section">
+      <h3>Will you stay with me forever?</h3>
+      <div class="btn-row">
+        <button class="yes" onclick="sayLove()">Yes ❤️</button>
+        <button class="no" id="noBtn" onmouseover="runAway()" onclick="runAway()" ontouchstart="runAway()">No 😢</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- LOVE RESPONSE OVERLAY -->
+<div class="love-overlay" id="loveOverlay">
+  <div class="love-card">
+    <span class="big-heart">💖</span>
+    <h2>I Like You, Ishitha </h2>
+    <p>You are my best mahila mitra.<br>You're my forever and always ✨</p>
+  </div>
+</div>
+
+<script>
+
+/* ── Photo Slideshow ── */
+const images = document.querySelectorAll('#photoFrame img');
+const dots = document.querySelectorAll('#photoDots span');
+let current = 0;
+
+setInterval(() => {
+  images[current].classList.remove('active');
+  dots[current].classList.remove('active');
+  current = (current + 1) % images.length;
+  images[current].classList.add('active');
+  dots[current].classList.add('active');
+}, 3000);
+
+
+/* ── "No" Button ── */
+const noBtn = document.getElementById('noBtn');
+let noBtnFreed = false;
+
+function runAway() {
+  if (!noBtnFreed) {
+    noBtnFreed = true;
+    noBtn.style.position = 'fixed';
+    noBtn.style.zIndex = '100';
+    noBtn.style.transition = 'top 0.2s ease, left 0.2s ease';
+    const spacer = document.createElement('div');
+    spacer.id = 'noSpacer';
+    spacer.style.width = noBtn.offsetWidth + 'px';
+    spacer.style.height = noBtn.offsetHeight + 'px';
+    noBtn.parentNode.insertBefore(spacer, noBtn);
+  }
+  const bw = noBtn.offsetWidth;
+  const bh = noBtn.offsetHeight;
+  const maxX = window.innerWidth - bw - 10;
+  const maxY = window.innerHeight - bh - 10;
+  noBtn.style.top = Math.random() * maxY + 'px';
+  noBtn.style.left = Math.random() * maxX + 'px';
+}
+
+
+/* ── "Yes" → Pop-up for 3 seconds then vanish ── */
+let heartBurst = null;
+let fadeTimer = null;
+
+function sayLove() {
+  noBtn.style.display = 'none';
+  const overlay = document.getElementById('loveOverlay');
+  const card = overlay.querySelector('.love-card');
+
+  /* Clear any previous timers so rapid clicks don't conflict */
+  if (heartBurst) { clearInterval(heartBurst); heartBurst = null; }
+  if (fadeTimer) { clearTimeout(fadeTimer); fadeTimer = null; }
+
+  /* Fully reset to a clean state — NO inline style.display */
+  overlay.classList.remove('show', 'fade-out');
+
+  /* Force reflow so browser sees this as a brand new trigger */
+  void overlay.offsetWidth;
+
+  /* Restart the card pop-in animation fresh each time */
+  card.style.animation = 'none';
+  void card.offsetWidth;
+  card.style.animation = '';
+
+  /* Show it */
+  overlay.classList.add('show');
+
+  /* Heart burst */
+  let count = 0;
+  heartBurst = setInterval(() => {
+    spawnHeart(true);
+    count++;
+    if (count > 60) {
+      clearInterval(heartBurst);
+      heartBurst = null;
+    }
+  }, 70);
+
+  /* Fade out after 3 seconds */
+  fadeTimer = setTimeout(() => {
+    if (heartBurst) { clearInterval(heartBurst); heartBurst = null; }
+    overlay.classList.add('fade-out');
+    setTimeout(() => {
+      overlay.classList.remove('show', 'fade-out');
+    }, 600);
+  }, 3000);
+}
+
+function spawnHeart(big) {
+  const h = document.createElement('div');
+  h.classList.add('heart');
+  h.classList.add('show');
+  const emojis = ['💖', '❤️', '💕', '💗', '🩷', '✨', '♥️'];
+  h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+  h.style.left = Math.random() * 100 + 'vw';
+  h.style.bottom = '-30px';
+  h.style.fontSize = (big ? Math.random() * 16 + 18 : Math.random() * 12 + 10) + 'px';
+  h.style.animationDuration = (Math.random() * 3 + 4) + 's';
+  document.body.appendChild(h);
+  h.addEventListener('animationend', () => h.remove());
+}
+
+
+/* ── Ambient Floating Hearts ── */
+setInterval(() => {
+  spawnHeart(false);
+}, 600);
+
+</script>
+</body>
+</html>v
