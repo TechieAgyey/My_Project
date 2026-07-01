@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto; height: calc(100vh - 170px); display: flex; flex-direction: column; background: #1e293b; border-radius: 12px; overflow: hidden;">
+    <!-- Chat Messages Container -->
+    <div style="flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+        <div style="align-self: flex-start; background: #334155; padding: 10px 15px; border-radius: 15px 15px 15px 0; max-width: 70%; font-size: 14px;">Hey! How's the app coming along?</div>
+        <div style="align-self: flex-end; background: #38bdf8; color: #0f172a; padding: 10px 15px; border-radius: 15px 15px 0 15px; max-width: 70%; font-size: 14px; font-weight: 500;">Almost done! Just setting up the base templates.</div>
+    </div>
+
+    <!-- Input Area -->
+    <div style="padding: 20px; background: #0f172a; display: flex; gap: 10px;">
+        <input type="text" placeholder="Type a message..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; outline: none;">
+        <button style="background: #38bdf8; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+    </div>
+</div>
+{% endblock %}

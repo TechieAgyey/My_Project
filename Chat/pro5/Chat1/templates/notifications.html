@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 20px auto;">
+    <div style="padding: 20px; background: rgba(56, 189, 248, 0.1); border-bottom: 1px solid rgba(255,255,255,0.1); border-radius: 12px 12px 0 0;">
+        <h2 style="margin: 0; color: #38bdf8; font-size: 20px;">Notifications</h2>
+    </div>
+
+    <div style="background: #1e293b; border-radius: 0 0 12px 12px; padding: 0;">
+        {% for note in notifications %}
+            <div style="padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <!-- Highlight unread notifications -->
+                    {% if not note.is_read %}
+                        <span style="color: #38bdf8; font-weight: bold;">●</span>
+                    {% endif %}
+                    <span style="color: white;">{{ note.message }}</span>
+                </div>
+                <div style="font-size: 0.8em; opacity: 0.5; color: white;">
+                    {{ note.timestamp|date:"M d, H:i" }}
+                </div>
+            </div>
+            {% empty %}
+            <div style="padding: 40px; text-align: center; opacity: 0.5; color: white;">
+                No new notifications.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

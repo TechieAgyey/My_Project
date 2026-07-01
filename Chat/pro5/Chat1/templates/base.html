@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ChatApp{% endblock %}</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; min-height: 100vh; display: flex; flex-direction: column;">
+
+    <!-- FIXED HEADER -->
+    <header style="position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; padding: 0 40px; z-index: 1000;">
+        <!-- Logo -->
+        <div style="font-size: 22px; font-weight: bold; color: #38bdf8; display: flex; align-items: center; cursor: pointer;" onclick="location.href='{% url 'home' %}'">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 10px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            ChatApp
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 20px; position: relative;">
+            {% if user.is_authenticated %}
+                <!-- Profile Pic Trigger -->
+                <div id="dropdownTrigger" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #38bdf8; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #1e293b;">
+                    {% if user.profile_pic %}
+                        <img src="{{ user.profile_pic.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    {% endif %}
+                </div>
+
+                <!-- UPDATED DROP-DOWN MENU -->
+                <div id="dropdown" style="display: none; position: absolute; top: 55px; right: 0; width: 220px; background: #1e3a8a; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 25px rgba(0,0,0,0.5); padding: 5px 0; z-index: 1001;">
+                    <div style="padding: 12px 20px; border-left: 3px solid #38bdf8; background: rgba(56, 189, 248, 0.1); font-weight: bold;">{{ user.username }}</div>
+                    
+                    <!-- UPDATED: Added unread_count badge -->
+                    <a href="{% url 'notifications' %}" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; color: white; text-decoration: none; font-size: 14px; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">
+                        <span>Notifications</span>
+                        {% if unread_count > 0 %}
+                            <span style="background: #f43f5e; color: white; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">{{ unread_count }}</span>
+                        {% endif %}
+                    </a>
+
+                    <!-- Functional Navigation Links -->
+                    <a href="{% url 'user_list' %}" style="display: block; padding: 10px 20px; color: white; text-decoration: none; font-size: 14px; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">User List</a>
+                    
+                    <a href="{% url 'user_list' %}" style="display: block; padding: 10px 20px; color: white; text-decoration: none; font-size: 14px; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">Add Friend</a>
+                    
+                    <a href="{% url 'user_list' %}" style="display: block; padding: 10px 20px; color: white; text-decoration: none; font-size: 14px; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">Remove Friend</a>
+
+                    <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 5px 0;"></div>
+                    
+                    <div style="padding: 10px 20px; cursor: pointer; opacity: 0.8; font-size: 14px;">Settings</div>
+                    
+                    <!-- Working Logout Button -->
+                    <a href="{% url 'logout' %}" style="display: block; text-decoration: none; padding: 12px 20px; border-top: 1px solid rgba(255,255,255,0.1); color: #f43f5e; font-weight: bold; font-size: 14px;" onmouseover="this.style.background='rgba(244, 63, 94, 0.1)'" onmouseout="this.style.background='transparent'">Log out</a>
+                </div>
+            {% else %}
+                <a href="{% url 'login' %}" style="color: white; text-decoration: none; opacity: 0.8;">Login</a>
+                <a href="{% url 'signup' %}" style="background: #38bdf8; color: #0f172a; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-weight: bold;">Sign Up</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- CONTENT AREA -->
+    <main style="margin-top: 70px; margin-bottom: 60px; flex: 1; padding: 20px;">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FIXED FOOTER -->
+    <footer style="position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: #0f172a; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; z-index: 1000; font-size: 13px; opacity: 0.5;">
+        &copy; 2024 ChatApp, Build By Agyey Tiwari and Family.
+    </footer>
+
+    <!-- Dropdown Script -->
+    <script>
+        const trigger = document.getElementById('dropdownTrigger');
+        const menu = document.getElementById('dropdown');
+
+        if (trigger) {
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            });
+        }
+
+        window.addEventListener('click', () => {
+            if (menu) menu.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

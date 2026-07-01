@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+    <div style="background: #1e293b; padding: 40px; border-radius: 12px; width: 350px; text-align: center;">
+        
+        <!-- Display Error Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <p style="color: #f43f5e; font-size: 13px; margin-bottom: 10px;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <h2 style="margin-bottom: 25px;">Login</h2>
+        
+        <!-- CHANGE: Ensure form method is POST and input names match the view -->
+        <form method="post" style="display: flex; flex-direction: column; gap: 15px;">
+            {% csrf_token %}
+            
+            <!-- name="username" must match request.POST.get('username') in views.py -->
+            <input type="text" name="username" placeholder="Username" required style="padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white;">
+            
+            <!-- name="password" must match request.POST.get('password') in views.py -->
+            <input type="password" name="password" placeholder="Password" required style="padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white;">
+            
+            <button type="submit" style="padding: 12px; background: #38bdf8; border: none; border-radius: 6px; color: #0f172a; font-weight: bold; cursor: pointer;">Login</button>
+        </form>
+        
+        <div style="margin-top: 20px; font-size: 14px;">
+            Don't have an account? <a href="{% url 'signup' %}" style="color: #38bdf8; text-decoration: none;">Sign Up</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 20px auto; background: #1e293b; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+    
+    <div style="padding: 20px; background: rgba(56, 189, 248, 0.1); border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <h2 style="margin: 0; color: #38bdf8; font-size: 20px;">Messages</h2>
+    </div>
+
+    <div style="padding: 10px;">
+        {% for person in users %}
+            <div style="display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 8px; transition: 0.3s; color: white;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
+                
+                <!-- Clickable Avatar and Name to Start Chat -->
+                <a href="{% url 'chat_screen' username=person.username %}" style="display: flex; align-items: center; gap: 15px; flex: 1; text-decoration: none; color: white;">
+                    <div style="width: 50px; height: 50px; background: #38bdf8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a; font-size: 20px;">
+                        {{ person.username|first|upper }}
+                    </div>
+                    
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; font-size: 16px;">{{ person.username }}</div>
+                        <div style="font-size: 11px; opacity: 0.6; color: #38bdf8;">Click to Chat</div>
+                    </div>
+                </a>
+
+                <!-- Action Buttons Area -->
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <!-- New Chat Button -->
+                    <a href="{% url 'chat_screen' username=person.username %}" style="text-decoration: none; background: #38bdf8; color: #0f172a; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold;">Chat</a>
+
+                    <!-- Friend Management Buttons -->
+                    {% if person in request.user.friends.all %}
+                        <a href="{% url 'remove_friend' person.id %}" style="text-decoration: none; background: rgba(244, 63, 94, 0.2); color: #f43f5e; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; border: 1px solid #f43f5e;">Remove</a>
+                    {% else %}
+                        <a href="{% url 'add_friend' person.id %}" style="text-decoration: none; background: rgba(34, 197, 94, 0.2); color: #22c55e; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; border: 1px solid #22c55e;">Add Friend</a>
+                    {% endif %}
+                </div>
+
+            </div>
+        {% empty %}
+            <div style="padding: 40px; text-align: center; opacity: 0.5;">
+                No users found.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+    <div style="background: #1e293b; padding: 40px; border-radius: 12px; width: 350px; text-align: center;">
+        
+        <!-- Added Message Display -->
+        {% if messages %}
+            {% for message in messages %}
+                <p style="color: #f43f5e; font-size: 13px; margin-bottom: 10px;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <h2 style="margin-bottom: 25px;">Create Account</h2>
+        <form method="post" style="display: flex; flex-direction: column; gap: 15px;">
+            {% csrf_token %}
+            <!-- Added name="email" -->
+            <input type="email" name="email" placeholder="Email Address" required style="padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white;">
+            
+            <!-- Added name="username" -->
+            <input type="text" name="username" placeholder="Username" required style="padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white;">
+            
+            <!-- Added name="password" -->
+            <input type="password" name="password" placeholder="Password" required style="padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white;">
+            
+            <button type="submit" style="padding: 12px; background: #38bdf8; border: none; border-radius: 6px; color: #0f172a; font-weight: bold; cursor: pointer;">Register</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
